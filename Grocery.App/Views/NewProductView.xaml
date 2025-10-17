@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Grocery.App.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=netstandard"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Grocery.App.Views.NewProductView"
+             Title="Nieuw Product">
+    
+    <Shell.TitleView>
+        <Grid>
+            <Label Text="Nieuw Product Toevoegen" FontSize="Large" HorizontalOptions="Center" VerticalOptions="Center" />
+        </Grid>
+    </Shell.TitleView>
+
+    <ScrollView Padding="20">
+        <StackLayout Spacing="15">
+            
+            <!-- Admin Check -->
+            <Border Stroke="Red" StrokeThickness="2" Padding="10">
+                <Border.IsVisible>
+                    <Binding Path="IsAdmin">
+                        <Binding.Converter>
+                            <toolkit:InvertedBoolConverter />
+                        </Binding.Converter>
+                    </Binding>
+                </Border.IsVisible>
+                <Label Text="Alleen administrators mogen nieuwe producten aanmaken." 
+                       TextColor="Red" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center"/>
+            </Border>
+
+            <!-- Product Form -->
+            <StackLayout IsEnabled="{Binding IsAdmin}" Spacing="15">
+                
+                <!-- Product Name -->
+                <StackLayout>
+                    <Label Text="Productnaam:" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Name}" 
+                           Placeholder="Voer productnaam in"
+                           MaxLength="80"/>
+                </StackLayout>
+
+                <!-- Stock -->
+                <StackLayout>
+                    <Label Text="Voorraad:" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Stock}" 
+                           Placeholder="Voer voorraad in"
+                           Keyboard="Numeric"/>
+                </StackLayout>
+
+                <!-- Shelf Life -->
+                <StackLayout>
+                    <Label Text="Houdbaarheidsdatum:" FontAttributes="Bold"/>
+                    <DatePicker x:Name="ShelfLifePicker"
+                                MinimumDate="{x:Static system:DateTime.Now}"/>
+                </StackLayout>
+
+                <!-- Price -->
+                <StackLayout>
+                    <Label Text="Prijs €:" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Price}" 
+                           Placeholder="0,00"
+                           Keyboard="Numeric"/>
+                </StackLayout>
+
+                <!-- Error Message -->
+                <Label Text="{Binding ErrorMessage}" 
+                       TextColor="Red" 
+                       FontAttributes="Bold">
+                    <Label.IsVisible>
+                        <Binding Path="ErrorMessage">
+                            <Binding.Converter>
+                                <toolkit:IsStringNotNullOrEmptyConverter />
+                            </Binding.Converter>
+                        </Binding>
+                    </Label.IsVisible>
+                </Label>
+
+                <!-- Buttons -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,20,0,0">
+                    <Button Text="Annuleren" 
+                            Grid.Column="0"
+                            Command="{Binding CancelCommand}"
+                            BackgroundColor="Gray"/>
+                    <Button Text="Toevoegen" 
+                            Grid.Column="1"
+                            Command="{Binding AddProductCommand}"
+                            BackgroundColor="#C49B33"/>
+                </Grid>
+                
+            </StackLayout>
+            
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
